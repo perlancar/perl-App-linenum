@@ -1,0 +1,77 @@
+#!perl
+
+# DATE
+# VERSION
+
+use strict;
+use warnings;
+use Getopt::Long;
+
+my %Opts = (
+    format         => '%4d|',
+    # XXX whether to add line number to empty lines
+    # XXX starting line number
+    # XXX line number increment (default 1)
+);
+
+sub parse_cmdline {
+    my $res = GetOptions(
+        'format|f'       => \$Opts{format},
+        'version|v'      => sub {
+            no warnings 'once';
+            print "linenum version ", ($main::VERSION || "dev"), "\n";
+            exit 0;
+        },
+        'help|h'           => sub {
+            print <<USAGE;
+Usage:
+  linenum [OPTIONS]... [FILE]...
+  linenum --version (or -v)
+  linenum --help (or -h)
+Options:
+  --format, -f
+For more details, see the manpage/documentation.
+USAGE
+            exit 0;
+        },
+    );
+    exit 99 if !$res;
+}
+
+sub run {
+    my $i = 0;
+    while (<>) {
+        $i++;
+        my $linum;
+        if (/\S/) {
+            $linum = sprintf $Opts{format}, $i;
+        } else {
+            $linum = sprintf $Opts{format}, $i;
+            $linum =~ s/(-?[0-9]+)/" " x length($1)/e;
+        }
+        print $linum, $_;
+    }
+}
+
+# MAIN
+
+parse_cmdline();
+run();
+
+1;
+# ABSTRACT: Add line number to lines
+# PODNAME:
+
+=head1 SYNOPSIS
+
+ linenum [OPTION]... [FILE]...
+
+
+=head1 DESCRIPTION
+
+
+=head1 SEE ALSO
+
+L<String::LineNumber>
+
+=cut
