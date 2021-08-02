@@ -2,3 +2,4 @@ App-linenum-*
 .build
 *~
 nytprof*
+.DS_Store
